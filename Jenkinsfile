@@ -1,17 +1,26 @@
-pipeline {
-
+pipeline{
+environment{
+reg = "18051011/assignment10 p2"
+regCre = "docker_id"
+dockerImg = ""
+}
 agent any
-stages {
-stage('Build') {
-steps {
-bat 'javac Helloworld.java'
-bat 'java -version'
+stages{
+stage('Build Image'){
+steps{
+script{
+dockerImg = docker.build reg + ":$BUILD_NUMBER"
 }
 }
-stage('Run') {
-steps
-{
-bat 'java Helloworld'
+}
+stage('Deploy the image'){
+steps{
+script{
+
+docker.withRegistry('',regCre){
+dockerImg.push()
+}
+}
 }
 }
 }
